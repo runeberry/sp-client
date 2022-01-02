@@ -1,1 +1,1 @@
-# sp-client
+# The Simulation Prototype - Client
