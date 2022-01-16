@@ -1,0 +1,16 @@
+{
+  "name": "sp-client",
+  "version": "0.0.1",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc -p ."
+  },
+  "devDependencies": {
+    "typescript": "^4.5.4"
+  },
+  "dependencies": {
+    "inversify": "^6.0.1",
+    "phaser": "^3.55.2",
+    "reflect-metadata": "^0.1.13"
+  }
+}
