@@ -4,7 +4,8 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack --config config/webpack.config.dev.js",
-    "start": "webpack-dev-server --config config/webpack.config.dev.js"
+    "start": "webpack-dev-server --config config/webpack.config.dev.js",
+    "gen-cert": "openssl req -x509 -newkey rsa:4096 -sha256 -days 36500 -nodes -keyout config/localhost.key -out config/localhost.crt -subj /CN=localhost"
   },
   "devDependencies": {
     "copy-webpack-plugin": "^10.2.0",
