@@ -1,6 +1,6 @@
-import { Scene } from 'phaser';
+import Phaser from 'phaser';
 
-export class DemoGameScene extends Scene
+export class DemoGameScene extends Phaser.Scene
 {
   private player: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody | undefined;
   private cursors: Phaser.Types.Input.Keyboard.CursorKeys | undefined;
