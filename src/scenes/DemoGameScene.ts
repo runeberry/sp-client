@@ -2,17 +2,23 @@ import Phaser from 'phaser';
 
 export class DemoGameScene extends Phaser.Scene
 {
-  private player: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody | undefined;
-  private cursors: Phaser.Types.Input.Keyboard.CursorKeys | undefined;
-  private stars: Phaser.Physics.Arcade.Group | undefined;
-  private bombs: Phaser.Physics.Arcade.Group | undefined;
+  private player!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+  private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
+  private stars!: Phaser.Physics.Arcade.Group;
+  private bombs!: Phaser.Physics.Arcade.Group;
+  private scoreText!: Phaser.GameObjects.Text;
+
   private score = 0;
-  private scoreText: Phaser.GameObjects.Text | undefined;
   private gameOver = false;
 
   constructor()
   {
     super({key: 'DemoGameScene'});
+  }
+
+  public init(): void
+  {
+
   }
 
   public preload(): void
@@ -85,9 +91,9 @@ export class DemoGameScene extends Phaser.Scene
     this.physics.add.overlap(this.player, this.stars, (player: any, star: any) => {
       star.disableBody(true, true);
       this.score += 10;
-      this.scoreText?.setText(`Score: ${this.score}`);
+      this.scoreText.setText(`Score: ${this.score}`);
 
-      if (this.stars?.countActive(true) === 0)
+      if (this.stars.countActive(true) === 0)
       {
         this.stars.children.iterate(function (child: any) {
           child.enableBody(true, child.x, 0, true, true);
@@ -95,7 +101,7 @@ export class DemoGameScene extends Phaser.Scene
 
         var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
 
-        var bomb = this.bombs?.create(x, 16, 'bomb');
+        var bomb = this.bombs.create(x, 16, 'bomb');
         bomb.setBounce(1);
         bomb.setCollideWorldBounds(true);
         bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
@@ -117,35 +123,35 @@ export class DemoGameScene extends Phaser.Scene
     }, undefined, this);
   }
 
-  public override update(time: number, delta: number): void
+  public update(time: number, delta: number): void
   {
     if (this.gameOver)
     {
       return;
     }
 
-    if (this.cursors?.left.isDown)
+    if (this.cursors.left.isDown)
     {
-      this.player?.setVelocityX(-160);
+      this.player.setVelocityX(-160);
 
-      this.player?.anims.play('left', true);
+      this.player.anims.play('left', true);
     }
-    else if (this.cursors?.right.isDown)
+    else if (this.cursors.right.isDown)
     {
-      this.player?.setVelocityX(160);
+      this.player.setVelocityX(160);
 
-      this.player?.anims.play('right', true);
+      this.player.anims.play('right', true);
     }
     else
     {
-      this.player?.setVelocityX(0);
+      this.player.setVelocityX(0);
 
-      this.player?.anims.play('turn');
+      this.player.anims.play('turn');
     }
 
-    if (this.cursors?.up.isDown && this.player?.body.touching.down)
+    if (this.cursors.up.isDown && this.player.body.touching.down)
     {
-      this.player?.setVelocityY(-330);
+      this.player.setVelocityY(-330);
     }
   }
 }
