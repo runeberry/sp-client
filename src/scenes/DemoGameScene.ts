@@ -13,7 +13,7 @@ export class DemoGameScene extends Phaser.Scene
 
   constructor()
   {
-    super({key: 'DemoGameScene'});
+    super({key: 'DemoGame'});
   }
 
   public init(): void

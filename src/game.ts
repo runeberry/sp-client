@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { DemoGameScene } from './scenes';
+import * as s from './scenes';
 
 function run()
 {
@@ -14,7 +14,10 @@ function run()
         debug: false,
       },
     },
-    scene: new DemoGameScene(),
+    scene: [
+      s.BootScene,
+      s.DemoGameScene,
+    ],
   };
 
   return new Phaser.Game(config);
