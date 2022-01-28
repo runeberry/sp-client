@@ -23,12 +23,12 @@ export class DemoGameScene extends Phaser.Scene
 
   public preload(): void
   {
-    this.load.image('sky', 'assets/sky.png');
-    this.load.image('ground', 'assets/platform.png');
-    this.load.image('star', 'assets/star.png');
-    this.load.image('bomb', 'assets/bomb.png');
+    this.load.image('sky', 'assets/demo-game/sky.png');
+    this.load.image('ground', 'assets/demo-game/platform.png');
+    this.load.image('star', 'assets/demo-game/star.png');
+    this.load.image('bomb', 'assets/demo-game/bomb.png');
     this.load.spritesheet('dude',
-      'assets/dude.png',
+      'assets/demo-game/dude.png',
       { frameWidth: 32, frameHeight: 48 }
     );
   }
