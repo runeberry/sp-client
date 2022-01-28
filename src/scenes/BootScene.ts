@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 
 export class BootScene extends Phaser.Scene
 {
+  private defaultScene = 'World';
   private loadingText!: Phaser.GameObjects.Text;
   private button!: Phaser.GameObjects.Shape;
 
@@ -30,8 +31,13 @@ export class BootScene extends Phaser.Scene
     this.button.on('pointerdown', () =>
     {
       console.log('Clicked the rectangle!');
-      this.scene.start('DemoGame');
+      this.scene.start(this.defaultScene);
     });
+
+    if (this.defaultScene)
+    {
+      this.scene.start(this.defaultScene);
+    }
   }
 
   public override update(time: number, delta: number): void
