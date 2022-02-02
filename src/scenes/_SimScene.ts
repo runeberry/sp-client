@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { GridEngine } from 'grid-engine';
 
 export class SimScene extends Phaser.Scene
 {
@@ -6,6 +7,12 @@ export class SimScene extends Phaser.Scene
   {
     super(config);
   }
+
+  //#region Plugins
+
+  protected gridEngine!: GridEngine;
+
+  //#endregion
 
   //#region Phaser lifecycle methods
 

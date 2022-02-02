@@ -17,6 +17,7 @@
     "webpack-merge": "^5.8.0"
   },
   "dependencies": {
+    "grid-engine": "^2.12.0",
     "inversify": "^6.0.1",
     "phaser": "^3.55.2",
     "reflect-metadata": "^0.1.13"

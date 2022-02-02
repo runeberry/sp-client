@@ -1,10 +1,13 @@
 import Phaser from "phaser";
+import { Direction, GridEngineConfig } from "grid-engine";
 import { SimScene } from ".";
 import * as m from '../map';
 
 export class WorldScene extends SimScene
 {
-  private player!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+  private tileSize = 16;
+
+  private player!: Phaser.GameObjects.Sprite;
   private camera!: Phaser.Cameras.Scene2D.Camera;
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
 
@@ -32,89 +35,46 @@ export class WorldScene extends SimScene
     const mapChunk = this.cache.json.get('map-data') as m.MapChunk;
 
     // Set visible map boundaries
-    this.physics.world.setBounds(0, 0, mapChunk.w * 16, mapChunk.h * 16);
+    const mapWidth = mapChunk.w * this.tileSize;
+    const mapHeight = mapChunk.h * this.tileSize;
+    this.physics.world.setBounds(0, 0, mapWidth, mapHeight);
 
     // Draw map
     const layer0data = this.toPhaserData(mapChunk);
-    const map0 = this.make.tilemap({ data: layer0data, tileWidth: 16, tileHeight: 16 });
+    const map0 = this.make.tilemap({ data: layer0data, tileWidth: this.tileSize, tileHeight: this.tileSize });
     const tiles0 = map0.addTilesetImage('tiles');
     const layer0 = map0.createLayer(0, tiles0, 0, 0);
 
     const layer1data = this.toPhaserObjectTiles(mapChunk);
-    const map1 = this.make.tilemap({ data: layer1data, tileWidth: 16, tileHeight: 16 });
+    const map1 = this.make.tilemap({ data: layer1data, tileWidth: this.tileSize, tileHeight: this.tileSize });
     const tiles1 = map1.addTilesetImage('objects');
     const layer1 = map1.createLayer(0, tiles1, 0, 0);
 
     // Create player
-    this.player = this.physics.add.sprite(30, 30, 'terra', 8);
-
-    const physicsGroup = this.physics.add.group({
-      allowGravity: false,
-      collideWorldBounds: true
-    });
-    physicsGroup.add(this.player);
-
-    this.anims.create({
-      key: 'walk-up',
-      frames: this.anims.generateFrameNumbers('terra', { frames: [ 1, 0, 2, 0 ] }),
-      frameRate: 10,
-      repeat: -1
-    });
-
-    this.anims.create({
-      key: 'walk-down',
-      frames: this.anims.generateFrameNumbers('terra', { frames: [ 9, 8, 10, 8 ] }),
-      frameRate: 10,
-      repeat: -1
-    });
-
-    this.anims.create({
-      key: 'walk-left',
-      frames: this.anims.generateFrameNumbers('terra', { frames: [ 17, 16, 18, 16 ] }),
-      frameRate: 10,
-      repeat: -1
-    });
-
-    this.anims.create({
-      key: 'walk-right',
-      frames: this.anims.generateFrameNumbers('terra', { frames: [ 25, 24, 26, 24 ] }),
-      frameRate: 10,
-      repeat: -1
-    });
+    this.player = this.add.sprite(0, 0, 'terra', 8);
 
     // Create controls
     this.cursors = this.input.keyboard.createCursorKeys();
-  }
 
-  public override update(time: number, delta: number): void
-  {
-    super.update(time, delta);
+    // Lock player to grid
+    const gridEngineConfig: GridEngineConfig = {
+      characters: [
+        {
+          id: 'player',
+          sprite: this.player,
+          speed: 6,
+          startPosition: { x: 30, y: 20 },
+          walkingAnimationMapping: {
+            up: { leftFoot: 1, standing: 0, rightFoot: 2 },
+            down: { leftFoot: 9, standing: 8, rightFoot: 10 },
+            left: { leftFoot: 17, standing: 16, rightFoot: 18 },
+            right: { leftFoot: 25, standing: 24, rightFoot: 26 },
+          },
+        },
+      ],
+    };
 
-    if (this.cursors.left.isDown)
-    {
-      this.player.setVelocityX(-160);
-      this.player.anims.play('walk-left', true);
-    }
-    else if (this.cursors.right.isDown)
-    {
-      this.player.setVelocityX(160);
-      this.player.anims.play('walk-right', true);
-    }
-    else if (this.cursors.up.isDown)
-    {
-      this.player.setVelocityY(-160);
-      this.player.anims.play('walk-up', true);
-    }
-    else if (this.cursors.down.isDown)
-    {
-      this.player.setVelocityY(160);
-      this.player.anims.play('walk-down', true);
-    }
-    else
-    {
-      this.player.setVelocity(0);
-      this.player.anims.pause();
-    }
+    this.gridEngine.create(map0, gridEngineConfig);
 
     // Setup the camera to follow the player
     this.camera = this.cameras.main;
@@ -125,6 +85,28 @@ export class WorldScene extends SimScene
       this.physics.world.bounds.height);
     this.camera.startFollow(this.player);
     this.camera.setZoom(2);
+  }
+
+  public override update(time: number, delta: number): void
+  {
+    super.update(time, delta);
+
+    if (this.cursors.left.isDown)
+    {
+      this.gridEngine.move('player', Direction.LEFT);
+    }
+    else if (this.cursors.right.isDown)
+    {
+      this.gridEngine.move('player', Direction.RIGHT);
+    }
+    else if (this.cursors.up.isDown)
+    {
+      this.gridEngine.move('player', Direction.UP);
+    }
+    else if (this.cursors.down.isDown)
+    {
+      this.gridEngine.move('player', Direction.DOWN);
+    }
   }
 
   // this needs to map the MapChunk data to an index on the tilesheet

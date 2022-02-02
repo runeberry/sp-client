@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { GridEngine } from 'grid-engine';
 import * as s from './scenes';
 
 function run()
@@ -20,6 +21,15 @@ function run()
       s.DemoGameScene,
       s.WorldScene,
     ],
+    plugins: {
+      scene: [
+        {
+          key: "gridEngine",
+          plugin: GridEngine,
+          mapping: "gridEngine",
+        }
+      ]
+    }
   };
 
   return new Phaser.Game(config);
