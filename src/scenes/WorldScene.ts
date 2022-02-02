@@ -1,7 +1,8 @@
 import Phaser from "phaser";
+import { SimScene } from ".";
 import * as m from '../map';
 
-export class WorldScene extends Phaser.Scene
+export class WorldScene extends SimScene
 {
   private player!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
   private camera!: Phaser.Cameras.Scene2D.Camera;
@@ -12,13 +13,10 @@ export class WorldScene extends Phaser.Scene
     super('World');
   }
 
-  public init(): void
+  public override preload(): void
   {
+    super.preload();
 
-  }
-
-  public preload(): void
-  {
     this.load.image('tiles', '/assets/sim/tiles.png');
     this.load.image('objects', '/assets/sim/objects.png');
     this.load.json('map-data', 'assets/sim/map-01.json');
@@ -26,8 +24,10 @@ export class WorldScene extends Phaser.Scene
       { frameWidth: 16, frameHeight: 32 });
   }
 
-  public create(): void
+  public override create(): void
   {
+    super.create();
+
     // Read map data
     const mapChunk = this.cache.json.get('map-data') as m.MapChunk;
 
@@ -86,8 +86,10 @@ export class WorldScene extends Phaser.Scene
     this.cursors = this.input.keyboard.createCursorKeys();
   }
 
-  public update(time: number, delta: number): void
+  public override update(time: number, delta: number): void
   {
+    super.update(time, delta);
+
     if (this.cursors.left.isDown)
     {
       this.player.setVelocityX(-160);
